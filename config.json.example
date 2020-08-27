@@ -1,5 +1,8 @@
 {
-    "command": "dipy_mask:dwi",
-    "lb": 5,
-    "dwi": "testdata/brad1/data.nii.gz",
+    "bvecs_tol": 0.01,
+    "b0_threshold": 50,
+    "bshell_thr": 100,
+    "dwi": "testdata/data.nii.gz",
+    "bvals": "testdata/data.bvals",
+    "bvecs": "testdata/data.bvecs"
 }

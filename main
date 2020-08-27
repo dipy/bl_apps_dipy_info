@@ -1,38 +1,29 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=6
+#PBS -l nodes=1:ppn=8
 #PBS -l vmem=16gb
 #PBS -l walltime=10:00:00
+
+export SINGULARITYENV_OMP_NUM_THREADS=7
 
 set -e
 set -x
 
-cmd=`jq -r .command config.json`
-case "$cmd" in
+mkdir -p output
+chmod -R +w output
 
-    dipy_mask:dwi)
-        cat > script.sh <<EOF
-#!/bin/bash
-dipy_mask --force \
-    --out_dir $PWD \
-    --out_mask mask.nii.gz \
-    $(jq -r .dwi config.json) $(jq -r .lb config.json)
-EOF
-      ;;
-    dipy_mask:tensor)
-        cat > script.sh <<EOF
-#!/bin/bash
-dipy_mask --force \
-    --out_dir $PWD \
-    --out_mask mask.nii.gz \
-    $(jq -r .fa config.json) $(jq -r .lb config.json)
-EOF
-        ;;
-    *)
-        echo "invalid command: $cmd"
-        exit 1
-esac
+time singularity exec -e docker://brainlife/dipy:1.1.1 dipy_info \
+    --force \
+    $(jq -r .dwi config.json) &> output/dwi_info.txt
 
-chmod +x script.sh
-SINGULARITYENV_PYTHONNOUSERSITE=true singularity exec -e docker://brainlife/dipy:1.1.1 ./script.sh
+time singularity exec -e docker://brainlife/dipy:1.1.1 dipy_info \
+    --force \
+    --bvecs_tol $(jq -r .bvecs_tol config.json) \
+    $(jq -r .bvecs config.json) &> output/bvecs_info.txt
+
+time singularity exec -e docker://brainlife/dipy:1.1.1 dipy_info \
+    --force \
+    --b0_threshold $(jq -r .b0_threshold config.json) \
+    --bshell_thr $(jq -r .bshell_thr config.json) \
+    $(jq -r .bvals config.json) &> output/bvals_info.txt
 
 echo "done"
