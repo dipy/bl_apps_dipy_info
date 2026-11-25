@@ -3,6 +3,48 @@
 
 # Dipy Info
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Reports basic information about a DWI dataset (image header, b-values/shells and b-vector checks) with DIPY dipy_info 1.1.1, as text files.**
+
+Runs dipy_info three times: on the DWI image, on the bvecs (checking unit norm within bvecs_tol) and on the bvals (counting b0 volumes below b0_threshold and grouping shells within bshell_thr). Use it as a quick sanity check of DWI data before processing; it does not modify the data.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/dwi` |
+| 📤 **Outputs** | `raw` |
+| 🐳 **Container** | `brainlife/dipy:1.1.1` |
+| ⚙️ **Resources** | 8 CPUs |
+| 🔗 **Run it** | [doi.org/10.25663/bl.app.63](https://doi.org/10.25663/bl.app.63) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `dwi` | `neuro/dwi` | yes | Diffusion-weighted image with its bvals and bvecs. |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `output` | `raw` | Text reports dwi_info.txt, bvecs_info.txt and bvals_info.txt. |
+
+<details>
+<summary><b>⚙️ Parameters</b> (3)</summary>
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `bvecs_tol` | number | `0.01` | Threshold used to check that norm(bvec) = 1 +/- bvecs_tol b-vectors are unit vectors (default 0.01). |
+| `b0_threshold` | number | `50` | b-value at or below which a volume is treated as b0 when summarising the bvals. |
+| `bshell_thr` | number | `100` | The threshold for distinguishing b-values in different shells (default 100). |
+
+</details>
+
+📚 **References used by this App:**
+- Garyfallidis E et al. Dipy, a library for the analysis of diffusion MRI data. Frontiers in Neuroinformatics 8:8 (2014). [doi:10.3389/fninf.2014.00008](https://doi.org/10.3389/fninf.2014.00008)
+
+<!-- brainlife-app:end -->
+
 The App provides information about your the diffusion-weighted magnetic resonance imaging data.
 
 ### Authors
